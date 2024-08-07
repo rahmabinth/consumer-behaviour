@@ -1,0 +1,241 @@
+---
+title: "My title"
+subtitle: "My subtitle if needed"
+author: 
+  - Rahma Binth Mohammad
+thanks: "Code and data are available at: LINK."
+date: today
+date-format: long
+abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
+format: pdf
+number-sections: true
+bibliography: references.bib
+---
+
+```{r}
+#| include: false
+#| warning: false
+#| message: false
+
+library(tidyverse)
+library(palmerpenguins)
+
+total_ex_cpi <- read_csv(here::here("data/analysis_data/total_ex_cpi.csv")) 
+
+```
+
+
+# Introduction
+
+You can and should cross-reference sections and sub-sections. We use @citeR and @rohan.
+
+The remainder of this paper is structured as follows. @sec-data....
+
+# Data {#sec-data}
+```{r}
+#| fig-cap: Linear model
+#| echo: false
+#| warning: false
+#| message: false
+
+total_ex_cpi |>
+  ggplot(aes(x = cpi, y = expenditure, color = factor(Year))) +
+  geom_point(size = 1) +
+  geom_line(linewidth = 0.5, aes(group = 1)) + 
+  labs(
+    title = "Total Expenditure vs All-Items CPI",
+    x = "All-Items CPI",
+    y = "Total Expenditure",
+    color = "Year"
+  ) +
+  theme_minimal() +
+  scale_color_viridis_d()
+```
+
+```{r}
+#| label: fig-bills
+#| fig-cap: Bills of penguins
+#| echo: false
+
+```
+
+Talk more about it.
+
+```{r}
+#| label: fig-planes
+#| fig-cap: Relationship between wing length and width
+#| echo: false
+#| warning: false
+#| message: false
+
+```
+
+Talk way more about it. 
+
+# Model
+
+The goal of our modelling strategy is twofold. Firstly,...
+
+Here we briefly describe the Bayesian analysis model used to investigate... Background details and diagnostics are included in [Appendix -@sec-model-details].
+
+## Model set-up
+
+### Simple linear regression
+
+Define $y_i$ as the total expenditure in Canadian dollars in year i. Then $cpi_i$ is the annual Consumer Price Index (CPI) for year i
+
+\begin{align} 
+y_i|\mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
+\mu_i &= \beta_0 + \beta_1 \times \mbox{cpi}_i + \epsilon\\
+\beta_0 &\sim \mbox{Normal}(0, 2.5) \\
+\beta_1 &\sim \mbox{Normal}(0, 2.5) \\
+\sigma &\sim \mbox{Exponential}(1)
+\end{align}
+
+Where
+
+### Multiple linear regression
+
+\begin{align} 
+y_i|\mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
+\mu_i &= \beta_0 + \beta_1 \times \mbox{cpi}_i + \beta_2 \mbox{income}_i+ \epsilon\\
+\beta_0 &\sim \mbox{Normal}(0, 2.5) \\
+\beta_1 &\sim \mbox{Normal}(0, 2.5) \\
+\beta_2 &\sim \mbox{Normal}(0, 2.5) \\
+\sigma &\sim \mbox{Exponential}(1)
+\end{align}
+
+
+We run the model in R [@citeR] using the `rstanarm` package of @rstanarm. We use the default priors from `rstanarm`.
+
+### Model justification
+
+We expect a positive relationship between the size of the wings and time spent aloft. In particular...
+
+We can use maths by including latex between dollar signs, for instance $\theta$.
+
+
+```{r}
+#| label: fig-2
+#| fig-cap: Linear model
+#| echo: false
+#| warning: false
+#| message: false
+library(scales)
+
+total_ex_cpi |>
+  ggplot(aes(x = cpi, y = expenditure, color = factor(Year))) +
+  geom_point(size = 1) +
+  geom_smooth(
+    method = "lm",
+    se = TRUE,
+    color = "black",
+    linetype = "dashed",
+    formula = y ~ x
+  ) +
+  labs(
+    title = "Total Expenditure vs All-Items CPI",
+    x = "All-Items CPI",
+    y = "Total Expenditure",
+    color = "Year"
+  ) +
+  scale_y_continuous(labels = scales::comma) +
+  scale_color_viridis_d() +
+  theme_minimal()
+```
+
+
+```{r}
+#| label: fig-3
+#| fig-cap: Linear model
+#| echo: false
+#| warning: false
+#| message: false
+library(scales)
+
+total_ex_cpi |>
+  ggplot(aes(x = cpi, y = expenditure, color = factor(Year))) +
+  geom_point(size = 1) +
+  geom_smooth(
+    method = "lm",
+    se = TRUE,
+    color = "black",
+    linetype = "dashed",
+    formula = y ~ x
+  ) +
+  labs(
+    title = "Total Expenditure vs All-Items CPI",
+    x = "All-Items CPI",
+    y = "Total Expenditure",
+    color = "Year"
+  ) +
+  scale_y_continuous(labels = scales::comma) +
+  scale_color_viridis_d() +
+  theme_minimal()
+```
+# Results
+
+Our results are summarized in @tbl-modelresults.
+
+```{r}
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+
+library(rstanarm)
+
+first_model <-
+  readRDS(file = here::here("models/first_model.rds"))
+second_model <-
+  readRDS(file = here::here("models/second_model.rds"))
+```
+
+```{r}
+#| echo: false
+#| eval: true
+#| label: tbl-modelresults
+#| tbl-cap: "Explanatory models of "
+#| warning: false
+
+modelsummary::modelsummary(
+  list(
+    "First model" = first_model,
+    "Second model" = second_model
+  ),
+  statistic = "mad",
+  fmt = 2
+)
+```
+
+```{r}
+
+```
+
+
+# Discussion
+
+## First discussion point {#sec-first-point}
+
+If my paper were 10 pages, then should be be at least 2.5 pages. The discussion is a chance to show off what you know and what you learnt from all this. 
+
+## Second discussion point
+
+## Third discussion point
+
+## Weaknesses and next steps
+
+Weaknesses and next steps should also be included.
+
+\newpage
+
+\appendix
+
+# Appendix {-}
+
+
+# Additional data details
+
+# Model details {#sec-model-details}
+
+## Posterior predictive check
