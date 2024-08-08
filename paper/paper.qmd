@@ -34,6 +34,38 @@ total_ex_cpi <- read_csv(here::here("data/analysis_data/total_ex_cpi.csv"))
 
 
 # Data {#sec-data}
+## Sources
+A good indicator of inflation is the Consumer Price Index (CPI), as it measures the change in price using a fixed basket of goods and services. Statistics Canada is a government agency that collects information on Canada’s economy (cite). Thus, it has the data that provides the CPI for numerous years. Statistics Canada also provides us with other datasets such as the average household income and the average household expenditures, in a year for all the provinces. We have chosen to look at Ontario solely, as we hold firmly Ontario behaves very differently due to its high population in relation to the other provinces. The data for Canada as a whole is complicated as there are many missing values for some provinces. Our analysis and the data provided by Statistics Canada makes it possible to reproduce our model for different provinces using the github repository.  While there are other datasets available, these three datasets are provided by the same source and has data for provinces across Canada. The expenditure and cpi data also provides the information for three additional specific categories, food, shelter, and recreation, making it easier to isolate and answer our research question. @sec-variables will illustrate the visualised data.
+ 
+This paper’s objective is to address the following questions using data collected from a government census: (1) Does changes in prices affect expenditure? (2) Does changed in prices affect expenditure as income changes?
+
+### Spending Data
+
+`spending.csv`
+
+This dataset contains the average total expenditures of the Ontario resident for the years 2010 to 2021, excluding years 2018 and 2020. It also contains the breakdown of the expenditures, food purchased (from restaurant and stores), shelter (rented and owned), utilities such as water, fuel, and electricity for the principal accommodation, clothing, transportation (private and public), healthcare, recreational goods and services. 
+
+### Inflation Data
+
+`cpi.csv`
+
+The dataset provides CPI for every year. It is not seasonally adjusted for changes as it is an annual average. Thus, it is actual price paid by consumers and not adjusted for seasonal fluctuations. The base year for the CPI calculation is 2002 where CPI is 100. Thus, if our CPI is 120 for a year, it indicates a 20% increase since 2002. This value is useful as an indicator for inflation, as it provides the increase and comparison between years, rather than a absolute price values. 
+
+### Income Data
+
+`income.csv`
+
+Throughout the province of Ontario, there exits people in many different financial situations. Statistics Canada provides us with this dataset that contains the average number of people in an income category. For example, “persons with income under $5000", “persons with income of $5000 and over”, “persons with income of $10 000 and over.” Please note as for 2020, COVID-19 government income support and benefits are included in income estimates. 
+
+## Methodology
+The language and environment used for this analysis is R (R Core Team 2020), alongside the tidyverse (cite), rstanarm (cite), cansim (cite), knitr (cite), ggplot2 (cite), scales (cite), modelsummary (cite), and marginaleffects (cite) packages. 
+
+We downloaded the data directly from Statistics Canada using the cansim package. We cleaned it, identified missing values and wrote csv files to make it easily accessible using R studio. 
+
+## Variables {#sec-variables}
+
+For our analysis, we have to use all three dataset values and thus, we chose to use data for the years 2010 to 2021, excluding 2018 and 2020, given the data was only available in all given datasets for these years. However our model does predict the behaviour in 2018 and 2020, using the other years’ data. We also created numerous csv files that isolated the specific data. @sec-appendix thoroughly explains the structure of the csv files.  
+
 
 ```{r}
 #| label: fig-spending
@@ -42,6 +74,7 @@ total_ex_cpi <- read_csv(here::here("data/analysis_data/total_ex_cpi.csv"))
 #| echo: false
 #| warning: false
 #| message: false
+
 #Plot spending categories for the years
 spending_colours <- c(
   "Total expenditure" = "goldenrod3", 
@@ -65,8 +98,7 @@ ggplot(spending, aes(x = Year, y = VALUE, color = expenditure_categories, group 
       labels = scales::comma
     )
 ```
-From the spending dataset, we chose to select the values for all food expenditures, all shelter expenditures, recreation expenditures, and total expenditures. This choice was made because these are principal expenditures for everyone. Recreation was added to this mix, to identify how consumers behave when inflation is high. 
-
+From the household spending dataset, we chose to select the values for all food expenditures, all shelter expenditures, recreation expenditures, and total expenditures. This choice was made because these are principal expenditures for everyone. Recreation was added to this mix, to identify how consumers behave when inflation is high. @fig-total_ex_cpi indicates this relationship. In @fig-spending, we observe a steady increase in recreation expenditures, while food, shelter, and overall expenditures show a more rapid growth. Note for simplicity, we did not include the other categories used for total expenditures. For all four of the categories, the mean and median values were close to each other, indicating the data is not skewed and did not have many outliers. However, the standard deviation for shelter and total expenditures were higher which indicates more money was spent and thus, more variation over the years. 
 
 ```{r}
 #| label: fig-cpi
@@ -195,6 +227,7 @@ y_i|\mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
 \end{align}
 
 Where:
+
 * $y_i$ as the total expenditure in Canadian dollars in year i. 
 * $cpi_i$ is the annual Consumer Price Index (CPI) for year i
 * $income_i$ is the number of people in Ontario earning an income
@@ -322,7 +355,7 @@ Weaknesses and next steps should also be included.
 
 \appendix
 
-# Appendix {-}
+# Appendix {#sec-appendix}
 
 
 # Additional data details

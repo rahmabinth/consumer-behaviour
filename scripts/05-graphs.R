@@ -15,17 +15,13 @@ library(scales)
 #### Load data ####
 spending <- read.csv("data/analysis_data/spending.csv")
 
-summary(spending)
 # Calculate summary statistics
 spending_stats <- spending %>%
   group_by(expenditure_categories) %>%
   summarise(
-    count = n(),
     mean_value = mean(VALUE, na.rm = TRUE),
     median_value = median(VALUE, na.rm = TRUE),
     sd_value = sd(VALUE, na.rm = TRUE),
-    min_value = min(VALUE, na.rm = TRUE),
-    max_value = max(VALUE, na.rm = TRUE),
     .groups = 'drop'
   )
 
@@ -39,12 +35,9 @@ cpi <- read.csv("data/analysis_data/cpi.csv")
 cpi_stats <- cpi %>%
   group_by(product_groups) %>%
   summarise(
-    count = n(),
     mean_value = mean(VALUE, na.rm = TRUE),
     median_value = median(VALUE, na.rm = TRUE),
     sd_value = sd(VALUE, na.rm = TRUE),
-    min_value = min(VALUE, na.rm = TRUE),
-    max_value = max(VALUE, na.rm = TRUE),
     .groups = 'drop'
   )
 
