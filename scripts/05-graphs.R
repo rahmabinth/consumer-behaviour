@@ -1,5 +1,5 @@
 #### Preamble ####
-# Purpose: Creates graphs with filtered data
+# Purpose: Creates graphs with filtered data that is included in the paper, useful for reproduction
 # Author: Rahma Binth Mohammad
 # Date: 11 February 2023 [...UPDATE THIS...]
 # Contact: rahma.binthmohammad@mail.utoronto.ca
@@ -10,6 +10,7 @@
 #### Workspace setup ####
 library(tidyverse)
 library(dplyr)
+library(scales)
 
 #### Load data ####
 spending <- read.csv("data/analysis_data/spending.csv")
@@ -57,17 +58,98 @@ income <- read.csv("data/analysis_data/income.csv")
 # Only one category in data - "All persons with income"
 summary(income$VALUE)
 
+#Plot spending categories for the years
+spending_colours <- c(
+  "Total expenditure" = "goldenrod3", 
+  "Food" = "purple",
+  "Shelter" = "green",
+  "Recreation" = "blue")
+spending_n_year <- ggplot(spending, aes(x = Year, y = VALUE, color = expenditure_categories, group = expenditure_categories)) +
+  geom_line() +
+  geom_point() +
+  labs(
+    title = "Household Spending per Year",
+    x = "Year",
+    y = "Expenditure Value ($)"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    legend.position = "bottom") +
+  scale_color_manual(values = spending_colours, name = NULL) +
+  scale_x_continuous(
+    breaks = seq(2010, 2021, by = 2)) +
+  scale_y_continuous(
+      labels = scales::comma
+    )
+
+print(spending_n_year)
+#Plot CPI values for each category for each year
+#Set colours so that it is easily comparible with spending data
+cpi_colours <- c(
+  "All-items" = "goldenrod3", 
+  "Food" = "purple",
+  "Shelter" = "green",
+  "Recreation" = "blue")
+
+cpi_n_year <- ggplot(cpi, aes(x = Year, y = VALUE, color = product_groups, group = product_groups)) +
+  geom_line() +
+  geom_point() +
+  labs(
+    title = "Consumer Price Index (CPI) per Year",
+    x = "Year",
+    y = "CPI",
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5), 
+    legend.position = "bottom") +
+  scale_color_manual(values = cpi_colours, name = NULL) +
+  scale_x_continuous(
+    breaks = seq(2010, 2021, by = 2)) +
+  scale_y_continuous(
+    breaks = seq(100, 160, by = 10),
+    limits = c(100, 160)
+  )
+
+print(cpi_n_year)
+
+#Plot the number of income earners against the year
+ggplot(income, aes(x = Year, y = VALUE)) +
+  geom_line(colour = "darkred") +
+  geom_point(colour = "darkred") +
+  labs(
+    title = "Number of Income Earners",
+    x = "Year",
+    y = "Income Earners"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5)) +
+  scale_x_continuous(
+    breaks = seq(2010, 2021, by = 2)) +
+  scale_y_continuous(
+    labels = scales::comma,
+    limits = c(9600000, 11250000)
+  )
+
+#Plot spending against cpi
 ggplot(total_ex_cpi, aes(x = cpi, y = expenditure, color = factor(Year))) +
   geom_point(size = 1) +
   geom_line(linewidth = 0.5, aes(group = 1)) + # Connect the points with a line
   labs(
-    title = "Total Expenditure vs All-Items CPI",
     x = "All-Items CPI",
     y = "Total Expenditure",
     color = "Year"
   ) +
   theme_minimal() +
-  scale_color_viridis_d()
+  scale_color_viridis_d() +
+  scale_x_continuous(
+    limits = c(115, 145)) +
+  scale_y_continuous(
+    labels = scales::comma,
+    limits = c(75000, 100000)
+  )
 
 ggplot(shelter_ex_cpi, aes(x = VALUE.x, y = VALUE.y)) +
   geom_point() +

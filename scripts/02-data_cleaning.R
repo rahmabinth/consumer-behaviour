@@ -23,6 +23,12 @@ spending <- spending %>%
          expenditure_categories %in% c("Total expenditure", "Shelter", "Food expenditures", "Recreation")) %>%
   select(Year, GEO, expenditure_categories, VALUE)
 
+spending <- spending %>%
+  mutate(expenditure_categories = recode(
+    expenditure_categories,
+    "Food expenditures" = "Food"
+  ))
+
 #Filter and rename the annual CPI data
 cpi <- read.csv("data/raw_data/cpi.csv")
 
@@ -33,6 +39,12 @@ cpi <- cpi %>%
   filter(GEO == "Ontario", Year >= 2010, Year <= 2021,
          product_groups %in% c("All-items", "Shelter", "Food", "Recreation, education and reading")) %>%
   select(Year, GEO, product_groups, VALUE)
+
+cpi <- cpi %>%
+  mutate(product_groups = recode(
+    product_groups,
+    "Recreation, education and reading" = "Recreation"
+  ))
 
 #Filter and rename the household income data
 income <- read.csv("data/raw_data/income.csv")

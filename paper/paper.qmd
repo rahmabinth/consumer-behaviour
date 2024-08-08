@@ -3,7 +3,7 @@ title: "My title"
 subtitle: "My subtitle if needed"
 author: 
   - Rahma Binth Mohammad
-thanks: "Code and data are available at: LINK."
+thanks: "Code and data are available at: https://github.com/rahmabinth/consumer-behaviour"
 date: today
 date-format: long
 abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
@@ -19,6 +19,10 @@ bibliography: references.bib
 
 library(tidyverse)
 library(palmerpenguins)
+library(patchwork)
+spending <-  read_csv(here::here("data/analysis_data/spending.csv"))
+cpi <-  read_csv(here::here("data/analysis_data/cpi.csv"))
+income <- read_csv(here::here("data/analysis_data/income.csv"))
 
 total_ex_cpi <- read_csv(here::here("data/analysis_data/total_ex_cpi.csv")) 
 
@@ -27,62 +31,143 @@ total_ex_cpi <- read_csv(here::here("data/analysis_data/total_ex_cpi.csv"))
 
 # Introduction
 
-You can and should cross-reference sections and sub-sections. We use @citeR and @rohan.
 
-The remainder of this paper is structured as follows. @sec-data....
 
 # Data {#sec-data}
+
 ```{r}
-#| fig-cap: Linear model
+#| label: fig-spending
+#| fig-cap: Household spending per year
+#| fig-align: "center"
+#| echo: false
+#| warning: false
+#| message: false
+#Plot spending categories for the years
+spending_colours <- c(
+  "Total expenditure" = "goldenrod3", 
+  "Food" = "purple",
+  "Shelter" = "green",
+  "Recreation" = "blue")
+ggplot(spending, aes(x = Year, y = VALUE, color = expenditure_categories, group = expenditure_categories)) +
+  geom_line() +
+  geom_point() +
+  labs(
+ 
+    x = "Year",
+    y = "Expenditure Value ($)"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = spending_colours, name = NULL) +
+  scale_x_continuous(
+    breaks = seq(2010, 2021, by = 2)) +
+  scale_y_continuous(
+      labels = scales::comma
+    )
+```
+From the spending dataset, we chose to select the values for all food expenditures, all shelter expenditures, recreation expenditures, and total expenditures. This choice was made because these are principal expenditures for everyone. Recreation was added to this mix, to identify how consumers behave when inflation is high. 
+
+
+```{r}
+#| label: fig-cpi
+#| fig-cap: Consumer Price Index (CPI) per Year
+#| fig-align: "center"
 #| echo: false
 #| warning: false
 #| message: false
 
-total_ex_cpi |>
-  ggplot(aes(x = cpi, y = expenditure, color = factor(Year))) +
-  geom_point(size = 1) +
-  geom_line(linewidth = 0.5, aes(group = 1)) + 
+cpi_colours <- c(
+  "All-items" = "goldenrod3", 
+  "Food" = "purple",
+  "Shelter" = "green",
+  "Recreation" = "blue")
+
+ggplot(cpi, aes(x = Year, y = VALUE, color = product_groups, group = product_groups)) +
+  geom_line() +
+  geom_point() +
   labs(
-    title = "Total Expenditure vs All-Items CPI",
+    x = "Year",
+    y = "CPI",
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom") +
+  scale_color_manual(values = cpi_colours, name = NULL) +
+  scale_x_continuous(
+    breaks = seq(2010, 2021, by = 2)) +
+  scale_y_continuous(
+    breaks = seq(100, 160, by = 10),
+    limits = c(100, 160)
+  )
+
+```
+
+From the CPI dataset, we chose to look at the annual average to keep it consistent with the annual average of expenditures. The variables 
+
+```{r}
+#| label: fig-income
+#| fig-cap: Number of Income Earners
+#| fig-align: "center"
+#| echo: false
+#| warning: false
+#| message: false
+#Plot the number of income earners against the year
+ggplot(income, aes(x = Year, y = VALUE)) +
+  geom_line(colour = "darkred") +
+  geom_point(colour = "darkred") +
+  labs(
+    x = "Year",
+    y = "Income Earners"
+  ) +
+  theme_minimal() +
+  scale_x_continuous(
+    breaks = seq(2010, 2021, by = 2)) +
+  scale_y_continuous(
+    labels = scales::comma,
+    limits = c(9600000, 11250000)
+  )
+
+```
+
+From the income dataset, we chose to isolate the values for the category “all persons with income”. This indicate all tax fillers and dependants that earn income from all sources. This was done to keep our analysis consistent. 
+
+
+```{r}
+#| label: fig-total_ex_cpi
+#| fig-cap: CPI and total expenditure over the year
+#| fig-align: "center"
+#| echo: false
+#| warning: false
+#| message: false
+
+ggplot(total_ex_cpi, aes(x = cpi, y = expenditure, color = factor(Year))) +
+  geom_point(size = 1) +
+  geom_line(linewidth = 0.5, aes(group = 1)) + # Connect the points with a line
+  labs(
     x = "All-Items CPI",
     y = "Total Expenditure",
     color = "Year"
   ) +
   theme_minimal() +
-  scale_color_viridis_d()
+  scale_color_viridis_d() +
+  scale_x_continuous(
+    limits = c(115, 145)) +
+  scale_y_continuous(
+    labels = scales::comma,
+    limits = c(75000, 100000)
+  )
 ```
 
-```{r}
-#| label: fig-bills
-#| fig-cap: Bills of penguins
-#| echo: false
-
-```
-
-Talk more about it.
-
-```{r}
-#| label: fig-planes
-#| fig-cap: Relationship between wing length and width
-#| echo: false
-#| warning: false
-#| message: false
-
-```
-
-Talk way more about it. 
 
 # Model
 
-The goal of our modelling strategy is twofold. Firstly,...
+The goal of our model is to forecasting the total expenditure in a household in a year, based solely on a the Consumer Price Index, and the number of people in Ontario earning an income. We run the model in R [@citeR] using the `rstanarm` package of @rstanarm. We use the default priors from `rstanarm`.
 
 Here we briefly describe the Bayesian analysis model used to investigate... Background details and diagnostics are included in [Appendix -@sec-model-details].
 
 ## Model set-up
 
 ### Simple linear regression
-
-Define $y_i$ as the total expenditure in Canadian dollars in year i. Then $cpi_i$ is the annual Consumer Price Index (CPI) for year i
+The model we employ is:
 
 \begin{align} 
 y_i|\mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
@@ -92,9 +177,13 @@ y_i|\mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
 \sigma &\sim \mbox{Exponential}(1)
 \end{align}
 
-Where
+Where:
+
+* $y_i$ as the total expenditure in Canadian dollars in year i. 
+* $cpi_i$ is the annual Consumer Price Index (CPI) for year i
 
 ### Multiple linear regression
+The model we employ is:
 
 \begin{align} 
 y_i|\mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
@@ -105,8 +194,10 @@ y_i|\mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
 \sigma &\sim \mbox{Exponential}(1)
 \end{align}
 
-
-We run the model in R [@citeR] using the `rstanarm` package of @rstanarm. We use the default priors from `rstanarm`.
+Where:
+* $y_i$ as the total expenditure in Canadian dollars in year i. 
+* $cpi_i$ is the annual Consumer Price Index (CPI) for year i
+* $income_i$ is the number of people in Ontario earning an income
 
 ### Model justification
 
