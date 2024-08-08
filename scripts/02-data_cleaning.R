@@ -90,7 +90,7 @@ shelter_ex_cpi <- inner_join(shelter_cpi, shelter_ex, by = "Year")
 
 #Isolate spending and CPI data for the FOOD category with just year and value
 food_ex <- spending %>%
-  filter(expenditure_categories == "Food expenditures") %>%
+  filter(expenditure_categories == "Food") %>%
   select(Year, VALUE)
 
 food_cpi <- cpi %>%
@@ -106,7 +106,7 @@ recreation_ex <- spending %>%
   select(Year, VALUE)
 
 recreation_cpi <- cpi %>%
-  filter(product_groups == "Recreation, education and reading") %>%
+  filter(product_groups == "Recreation") %>%
   select(Year, VALUE)
 
 #Combine the isolated data

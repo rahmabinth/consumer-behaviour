@@ -20,18 +20,40 @@ bibliography: references.bib
 library(tidyverse)
 library(palmerpenguins)
 library(patchwork)
+
 spending <-  read_csv(here::here("data/analysis_data/spending.csv"))
+
 cpi <-  read_csv(here::here("data/analysis_data/cpi.csv"))
+
 income <- read_csv(here::here("data/analysis_data/income.csv"))
 
 total_ex_cpi <- read_csv(here::here("data/analysis_data/total_ex_cpi.csv")) 
 
-```
+shelter_ex_cpi <- read_csv(here::here("data/analysis_data/shelter_ex_cpi.csv"))
 
+food_ex_cpi <- read_csv(here::here("data/analysis_data/food_ex_cpi.csv"))
+
+recreation_ex_cpi <- read_csv(here::here("data/analysis_data/recreation_ex_cpi.csv"))
+
+spending_n_income <- read_csv(here::here("data/analysis_data/spending_n_income.csv"))
+
+```
 
 # Introduction
 
+Consumption is the biggest indicator of a person’s needs and desires. Our interest is to inquire into whether tracking consumption, along with income and prices of items through inflation, will tell us a better story about a household’s financial behaviour and broader economic trends. By assessing these variables, we can uncover how inflation influences spending habits and whether an increase or decrease in income can mitigate or exacerbate the effects of rising or falling prices. The relationship between these variables can provide information in regards improving economic stability and effective social/governmental assistance to support households in managing their spending in the face of inflationary pressures. Policymakers can use this information to employ strategies for the wellbeing of the state. 
 
+Recently, inflation has become serious problem. It diminishes purchasing power, which is a problem at the individual level but also state level. On an individual level, it affects costs of living, impeding the ability to live luxuriously. On a state level, it can lead to increased costs for goods and services, reducing the competitiveness of a state’s exports and making it harder for businesses to thrive on a domestic and global market. Thus, it is crucial states manage inflation as it will strength consumer and investor confidence, leading to economic stability and growth.
+
+This study focuses specifically on the total expenditure, household income, and the inflationary changes over a period of several years.
+
+We used a simple linear regression model and a multiple linear regression for our analysis. For the simple linear model, we used the the change in prices over several years against the average household spending during these years. For the multiple regression model, we used the average household income, along with the change in the prices to predict household spending. 
+Our estimand is the 
+
+Based on our model and analysis, we found that
+
+This paper was designed to communicate our model and analysis in a structured manner.
+@sec-data will provide the datasets used for this analysis. @sec-model will explore the simple and multiple linear regression models used for this analysis, along with the justification for the use of such models. @sec-results will provide the results from that analysis. A discussion of the results and the weaknesses and biases of this type of analysis will be provided in @sec-discussion.
 
 # Data {#sec-data}
 ## Sources
@@ -55,7 +77,7 @@ The dataset provides CPI for every year. It is not seasonally adjusted for chang
 
 `income.csv`
 
-Throughout the province of Ontario, there exits people in many different financial situations. Statistics Canada provides us with this dataset that contains the average number of people in an income category. For example, “persons with income under $5000", “persons with income of $5000 and over”, “persons with income of $10 000 and over.” Please note as for 2020, COVID-19 government income support and benefits are included in income estimates. 
+Throughout the province of Ontario, there exits people in many different financial situations. Statistics Canada provides us with this dataset that contains the average number of people in an income category. For example, “persons with income under $5000", “persons with income of $5000 and over”, “persons with income of $10 000 and over.” Note for 2020, COVID-19 government income support and benefits are included in income estimates. 
 
 ## Methodology
 The language and environment used for this analysis is R (R Core Team 2020), alongside the tidyverse (cite), rstanarm (cite), cansim (cite), knitr (cite), ggplot2 (cite), scales (cite), modelsummary (cite), and marginaleffects (cite) packages. 
@@ -79,7 +101,7 @@ For our analysis, we have to use all three dataset values and thus, we chose to 
 spending_colours <- c(
   "Total expenditure" = "goldenrod3", 
   "Food" = "purple",
-  "Shelter" = "green",
+  "Shelter" = "darkgreen",
   "Recreation" = "blue")
 ggplot(spending, aes(x = Year, y = VALUE, color = expenditure_categories, group = expenditure_categories)) +
   geom_line() +
@@ -98,7 +120,7 @@ ggplot(spending, aes(x = Year, y = VALUE, color = expenditure_categories, group 
       labels = scales::comma
     )
 ```
-From the household spending dataset, we chose to select the values for all food expenditures, all shelter expenditures, recreation expenditures, and total expenditures. This choice was made because these are principal expenditures for everyone. Recreation was added to this mix, to identify how consumers behave when inflation is high. @fig-total_ex_cpi indicates this relationship. In @fig-spending, we observe a steady increase in recreation expenditures, while food, shelter, and overall expenditures show a more rapid growth. Note for simplicity, we did not include the other categories used for total expenditures. For all four of the categories, the mean and median values were close to each other, indicating the data is not skewed and did not have many outliers. However, the standard deviation for shelter and total expenditures were higher which indicates more money was spent and thus, more variation over the years. 
+From the household spending dataset, we chose to select the values for all food expenditures, all shelter expenditures, recreation expenditures, and total expenditures. This choice was made because these are principal expenditures for everyone. Recreation was added to this mix, to identify how consumers behave when inflation is high. @fig-food_n_recreation indicates this relationship. In @fig-spending, we observe a steady increase in recreation expenditures, while food, shelter, and overall expenditures show a more rapid growth. Note for simplicity, we did not include the other categories used for total expenditures. For all four of the categories, the mean and median values were close to each other, indicating the data is not skewed and did not have many outliers. However, the standard deviation for shelter and total expenditures were higher which indicates more money was spent and thus, more variation over the years. The only variable we use for our models from this dataset is `total expenditure`. However, the model can be used for the other categories. The model is made to be easily reproducible and can be found in the github link provided on page 1. 
 
 ```{r}
 #| label: fig-cpi
@@ -111,7 +133,7 @@ From the household spending dataset, we chose to select the values for all food 
 cpi_colours <- c(
   "All-items" = "goldenrod3", 
   "Food" = "purple",
-  "Shelter" = "green",
+  "Shelter" = "darkgreen",
   "Recreation" = "blue")
 
 ggplot(cpi, aes(x = Year, y = VALUE, color = product_groups, group = product_groups)) +
@@ -133,11 +155,11 @@ ggplot(cpi, aes(x = Year, y = VALUE, color = product_groups, group = product_gro
 
 ```
 
-From the CPI dataset, we chose to look at the annual average to keep it consistent with the annual average of expenditures. The variables 
+From the CPI dataset, we chose to look at the annual average to keep it consistent with the annual average of expenditures. The data provides cpi for specific categories, as well as all-items. We chose to select cpi for all-items, food, shelter, and recreations, for comparison with the household spending. The prices for food and shelter increased almost 35% in the 10 years illustrated in @fig-cpi. However, the prices for recreation saw a decrease in 2020 and 2021, which indicates a relation to COVID-19. Our models will use the ‘all-items’ CPI to ensure consistency. 
 
 ```{r}
 #| label: fig-income
-#| fig-cap: Number of Income Earners
+#| fig-cap: Number of Income Earners per Year
 #| fig-align: "center"
 #| echo: false
 #| warning: false
@@ -160,20 +182,23 @@ ggplot(income, aes(x = Year, y = VALUE)) +
 
 ```
 
-From the income dataset, we chose to isolate the values for the category “all persons with income”. This indicate all tax fillers and dependants that earn income from all sources. This was done to keep our analysis consistent. 
+From the income dataset, we chose to isolate the values for the category “all persons with income”. This indicate all tax fillers and dependants that earn income from all sources. This was done to keep our analysis consistent, as we could not separate who was spending. Our model will use the all persons with income variable as well. @fig-income shows a significant increase in the number of income earners. This could be due to a population increase, specifically an increase in tax fillers and tax dependants. 
 
+## Measurement
+
+A discussion about measurement.
 
 ```{r}
-#| label: fig-total_ex_cpi
-#| fig-cap: CPI and total expenditure over the year
+#| label: fig-total_n_shelter
+#| fig-cap: All-items CPI and total expenditure over the years (on the left), shelter CPI and shelter expenditure over the years (on the right)
 #| fig-align: "center"
 #| echo: false
 #| warning: false
 #| message: false
 
-ggplot(total_ex_cpi, aes(x = cpi, y = expenditure, color = factor(Year))) +
+fig_total <- ggplot(total_ex_cpi, aes(x = cpi, y = expenditure, color = factor(Year))) +
   geom_point(size = 1) +
-  geom_line(linewidth = 0.5, aes(group = 1)) + # Connect the points with a line
+  geom_line(linewidth = 0.5, aes(group = 1)) +
   labs(
     x = "All-Items CPI",
     y = "Total Expenditure",
@@ -186,11 +211,85 @@ ggplot(total_ex_cpi, aes(x = cpi, y = expenditure, color = factor(Year))) +
   scale_y_continuous(
     labels = scales::comma,
     limits = c(75000, 100000)
+  ) 
+
+fig_shelter <- ggplot(shelter_ex_cpi, aes(x = VALUE.x, y = VALUE.y, color = factor(Year))) +
+  geom_point(size = 1) +
+  geom_line(linewidth = 0.5,  aes(group = 1)) +
+  labs(
+    x = "Shelter CPI",
+    y = "Shelter Expenditure",
+    color = "Year"
+  ) +
+  theme_minimal() +
+  scale_color_viridis_d() +
+  scale_x_continuous(
+    limits = c(120, 160)) +
+  scale_y_continuous(
+    labels = scales::comma,
+    limits = c(16000, 25000)
+  ) +
+  theme(
+    legend.position = "none"
   )
+
+total_shelter_cpi <- fig_total + fig_shelter +
+  plot_layout(ncol = 2) 
+
+print(total_shelter_cpi)
+
 ```
 
+```{r}
+#| label: fig-food_n_recreation
+#| fig-cap: Food CPI and food expenditure over the years (on the left), recreation CPI and recreation expenditure over the years (on the right)
+#| fig-align: "center"
+#| echo: false
+#| warning: false
+#| message: false
 
-# Model
+fig_food <- ggplot(food_ex_cpi, aes(x = VALUE.x, y = VALUE.y, color = factor(Year))) +
+  geom_point(size = 1) +
+  geom_line(linewidth = 0.5,  aes(group = 1)) +
+  labs(
+    x = "Food CPI",
+    y = "Food Expenditure",
+    color = "Year"
+  ) +
+  theme_minimal() +
+  scale_color_viridis_d() +
+  scale_x_continuous(
+    limits = c(120, 160)) +
+  scale_y_continuous(
+    labels = scales::comma,
+    limits = c(7000, 11000)
+  )
+
+fig_recreation <- ggplot(recreation_ex_cpi, aes(x = VALUE.x, y = VALUE.y, color = factor(Year))) +
+  geom_point(size = 1) +
+  geom_line(linewidth = 0.5, aes(group = 1)) +
+  labs(
+    x = "Recreation CPI",
+    y = "Recreation Expenditure",
+    color = "Year"
+  ) +
+  theme_minimal() +
+  scale_color_viridis_d() +
+  scale_y_continuous(
+    labels = scales::comma
+  ) +
+  theme(
+    legend.position = "none"
+  )
+
+food_recreation_cpi <- fig_food + fig_recreation+
+  plot_layout(ncol = 2) 
+
+print(food_recreation_cpi)
+
+```
+
+# Model {#sec-model}
 
 The goal of our model is to forecasting the total expenditure in a household in a year, based solely on a the Consumer Price Index, and the number of people in Ontario earning an income. We run the model in R [@citeR] using the `rstanarm` package of @rstanarm. We use the default priors from `rstanarm`.
 
@@ -297,7 +396,8 @@ total_ex_cpi |>
   scale_color_viridis_d() +
   theme_minimal()
 ```
-# Results
+
+# Results {#sec-results}
 
 Our results are summarized in @tbl-modelresults.
 
@@ -337,7 +437,7 @@ modelsummary::modelsummary(
 ```
 
 
-# Discussion
+# Discussion {#sec-discussion}
 
 ## First discussion point {#sec-first-point}
 

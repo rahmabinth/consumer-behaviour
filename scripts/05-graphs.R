@@ -55,7 +55,7 @@ summary(income$VALUE)
 spending_colours <- c(
   "Total expenditure" = "goldenrod3", 
   "Food" = "purple",
-  "Shelter" = "green",
+  "Shelter" = "darkgreen",
   "Recreation" = "blue")
 spending_n_year <- ggplot(spending, aes(x = Year, y = VALUE, color = expenditure_categories, group = expenditure_categories)) +
   geom_line() +
@@ -82,7 +82,7 @@ print(spending_n_year)
 cpi_colours <- c(
   "All-items" = "goldenrod3", 
   "Food" = "purple",
-  "Shelter" = "green",
+  "Shelter" = "darkgreen",
   "Recreation" = "blue")
 
 cpi_n_year <- ggplot(cpi, aes(x = Year, y = VALUE, color = product_groups, group = product_groups)) +
@@ -129,7 +129,7 @@ ggplot(income, aes(x = Year, y = VALUE)) +
 #Plot spending against cpi
 ggplot(total_ex_cpi, aes(x = cpi, y = expenditure, color = factor(Year))) +
   geom_point(size = 1) +
-  geom_line(linewidth = 0.5, aes(group = 1)) + # Connect the points with a line
+  geom_line(linewidth = 0.5, aes(group = 1)) +
   labs(
     x = "All-Items CPI",
     y = "Total Expenditure",
@@ -144,45 +144,66 @@ ggplot(total_ex_cpi, aes(x = cpi, y = expenditure, color = factor(Year))) +
     limits = c(75000, 100000)
   )
 
-ggplot(shelter_ex_cpi, aes(x = VALUE.x, y = VALUE.y)) +
-  geom_point() +
+ggplot(shelter_ex_cpi, aes(x = VALUE.x, y = VALUE.y, color = factor(Year))) +
+  geom_point(size = 1) +
+  geom_line(linewidth = 0.5,  aes(group = 1)) +
   labs(
-    title = "Shelter Expenditure vs Shelter CPI",
     x = "Shelter CPI",
-    y = "Shelter Expenditure"
+    y = "Shelter Expenditure",
+    color = "Year"
   ) +
-  theme_minimal()
+  theme_minimal() +
+  scale_color_viridis_d() +
+  scale_x_continuous(
+    limits = c(120, 160)) +
+  scale_y_continuous(
+    labels = scales::comma,
+    limits = c(16000, 25000)
+  )
 
-ggplot(food_ex_cpi, aes(x = VALUE.x, y = VALUE.y)) +
-  geom_point() +
+ggplot(food_ex_cpi, aes(x = VALUE.x, y = VALUE.y, color = factor(Year))) +
+  geom_point(size = 1) +
+  geom_line(linewidth = 0.5,  aes(group = 1)) +
   labs(
-    title = "Food Expenditure vs Food CPI",
     x = "Food CPI",
-    y = "Food Expenditure"
+    y = "Food Expenditure",
+    color = "Year"
   ) +
-  theme_minimal()
+  theme_minimal() +
+  scale_color_viridis_d() +
+  scale_x_continuous(
+    limits = c(120, 160)) +
+  scale_y_continuous(
+    labels = scales::comma,
+    limits = c(7000, 11000)
+  )
 
 ggplot(recreation_ex_cpi, aes(x = VALUE.x, y = VALUE.y, color = factor(Year))) +
   geom_point(size = 1) +
-  geom_line(linewidth = 0.5, aes(group = 1)) + # Connect the points with a line
+  geom_line(linewidth = 0.5, aes(group = 1)) +
   labs(
-    title = "Recreation Expenditure vs Recreation CPI",
     x = "Recreation CPI",
     y = "Recreation Expenditure",
     color = "Year"
   ) +
   theme_minimal() +
-  scale_color_viridis_d()
+  scale_color_viridis_d() +
+  scale_y_continuous(
+    labels = scales::comma
+  )
 
 # Plot with points and lines
 ggplot(spending_n_income, aes(x = VALUE.x, y = VALUE.y, color = factor(Year))) +
   geom_point(size = 1) +
   geom_line(linewidth = 0.5, aes(group = 1)) + # Connect the points with a line
   labs(
-    title = "Income vs Expenditure by Year",
-    x = "Income",
+    x = "Number of Income Earners",
     y = "Total Expenditure",
-    color = "Year"
-  ) +
+    color = "Year") +
   theme_minimal() +
-  scale_color_viridis_d()
+  scale_color_viridis_d() +
+  scale_x_continuous(
+    labels = scales::comma) +
+  scale_y_continuous(
+    labels = scales::comma)
+
