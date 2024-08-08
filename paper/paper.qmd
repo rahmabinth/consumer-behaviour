@@ -56,8 +56,14 @@ This paper was designed to communicate our model and analysis in a structured ma
 @sec-data will provide the datasets used for this analysis. @sec-model will explore the simple and multiple linear regression models used for this analysis, along with the justification for the use of such models. @sec-results will provide the results from that analysis. A discussion of the results and the weaknesses and biases of this type of analysis will be provided in @sec-discussion.
 
 # Data {#sec-data}
-## Sources
-A good indicator of inflation is the Consumer Price Index (CPI), as it measures the change in price using a fixed basket of goods and services. Statistics Canada is a government agency that collects information on Canada’s economy (cite). Thus, it has the data that provides the CPI for numerous years. Statistics Canada also provides us with other datasets such as the average household income and the average household expenditures, in a year for all the provinces. We have chosen to look at Ontario solely, as we hold firmly Ontario behaves very differently due to its high population in relation to the other provinces. The data for Canada as a whole is complicated as there are many missing values for some provinces. Our analysis and the data provided by Statistics Canada makes it possible to reproduce our model for different provinces using the github repository.  While there are other datasets available, these three datasets are provided by the same source and has data for provinces across Canada. The expenditure and cpi data also provides the information for three additional specific categories, food, shelter, and recreation, making it easier to isolate and answer our research question. @sec-variables will illustrate the visualised data.
+
+## Methodology
+The language and environment used for this analysis is R (R Core Team 2020), alongside the tidyverse (cite), rstanarm (cite), cansim (cite), knitr (cite), ggplot2 (cite), scales (cite), modelsummary (cite), and marginaleffects (cite) packages. 
+
+We downloaded the data directly from Statistics Canada using the cansim package. We cleaned it, identified missing values and wrote csv files to make it easily accessible using R studio. 
+
+## Sources and Variables {#sec-sources_variables}
+A good indicator of inflation is the Consumer Price Index (CPI), as it measures the change in price using a fixed basket of goods and services. Statistics Canada is a government agency that collects information on Canada’s economy (cite). Thus, it has the data that provides the CPI for numerous years. Statistics Canada also provides us with other datasets such as the average household income and the average household expenditures, in a year for all the provinces. We have chosen to look at Ontario solely, as we hold firmly Ontario behaves very differently due to its high population in relation to the other provinces. The data for Canada as a whole is complicated as there are many missing values for some provinces. Our analysis and the data provided by Statistics Canada makes it possible to reproduce our model for different provinces using the github repository.  While there are other datasets available, these three datasets are provided by the same source and has data for provinces across Canada. The expenditure and cpi data also provides the information for three additional specific categories, food, shelter, and recreation, making it easier to isolate and answer our research question. @sec-sources_variables will illustrate the visualised data.
  
 This paper’s objective is to address the following questions using data collected from a government census: (1) Does changes in prices affect expenditure? (2) Does changed in prices affect expenditure as income changes?
 
@@ -65,29 +71,9 @@ This paper’s objective is to address the following questions using data collec
 
 `spending.csv`
 
-This dataset contains the average total expenditures of the Ontario resident for the years 2010 to 2021, excluding years 2018 and 2020. It also contains the breakdown of the expenditures, food purchased (from restaurant and stores), shelter (rented and owned), utilities such as water, fuel, and electricity for the principal accommodation, clothing, transportation (private and public), healthcare, recreational goods and services. 
+This dataset contains the average total expenditures of the Ontario resident for the years 2010 to 2021, excluding years 2018 and 2020. It also contains the breakdown of the expenditures, food purchased (from restaurant and stores), shelter (rented and owned), utilities such as water, fuel, and electricity for the principal accommodation, clothing, transportation (private and public), healthcare, recreational goods and services.
 
-### Inflation Data
-
-`cpi.csv`
-
-The dataset provides CPI for every year. It is not seasonally adjusted for changes as it is an annual average. Thus, it is actual price paid by consumers and not adjusted for seasonal fluctuations. The base year for the CPI calculation is 2002 where CPI is 100. Thus, if our CPI is 120 for a year, it indicates a 20% increase since 2002. This value is useful as an indicator for inflation, as it provides the increase and comparison between years, rather than a absolute price values. 
-
-### Income Data
-
-`income.csv`
-
-Throughout the province of Ontario, there exits people in many different financial situations. Statistics Canada provides us with this dataset that contains the average number of people in an income category. For example, “persons with income under $5000", “persons with income of $5000 and over”, “persons with income of $10 000 and over.” Note for 2020, COVID-19 government income support and benefits are included in income estimates. 
-
-## Methodology
-The language and environment used for this analysis is R (R Core Team 2020), alongside the tidyverse (cite), rstanarm (cite), cansim (cite), knitr (cite), ggplot2 (cite), scales (cite), modelsummary (cite), and marginaleffects (cite) packages. 
-
-We downloaded the data directly from Statistics Canada using the cansim package. We cleaned it, identified missing values and wrote csv files to make it easily accessible using R studio. 
-
-## Variables {#sec-variables}
-
-For our analysis, we have to use all three dataset values and thus, we chose to use data for the years 2010 to 2021, excluding 2018 and 2020, given the data was only available in all given datasets for these years. However our model does predict the behaviour in 2018 and 2020, using the other years’ data. We also created numerous csv files that isolated the specific data. @sec-appendix thoroughly explains the structure of the csv files.  
-
+From this dataset, we chose to select the values for all food expenditures, all shelter expenditures, recreation expenditures, and total expenditures. This choice was made because these are principal expenditures for everyone. Recreation was added to this mix, to identify how consumers behave when inflation is high. @fig-food_n_recreation indicates this relationship. In @fig-spending, we observe a steady increase in recreation expenditures, while food, shelter, and overall expenditures show a more rapid growth. Note for simplicity, we did not include the other categories used for total expenditures. For all four of the categories, the mean and median values were close to each other, indicating the data is not skewed and did not have many outliers. However, the standard deviation for shelter and total expenditures were higher which indicates more money was spent and thus, more variation over the years. The only variable we use for our models from this dataset is `total expenditure`. However, the model can be used for the other categories. The model is made to be easily reproducible and can be found in the github link provided on page 1. 
 
 ```{r}
 #| label: fig-spending
@@ -120,7 +106,14 @@ ggplot(spending, aes(x = Year, y = VALUE, color = expenditure_categories, group 
       labels = scales::comma
     )
 ```
-From the household spending dataset, we chose to select the values for all food expenditures, all shelter expenditures, recreation expenditures, and total expenditures. This choice was made because these are principal expenditures for everyone. Recreation was added to this mix, to identify how consumers behave when inflation is high. @fig-food_n_recreation indicates this relationship. In @fig-spending, we observe a steady increase in recreation expenditures, while food, shelter, and overall expenditures show a more rapid growth. Note for simplicity, we did not include the other categories used for total expenditures. For all four of the categories, the mean and median values were close to each other, indicating the data is not skewed and did not have many outliers. However, the standard deviation for shelter and total expenditures were higher which indicates more money was spent and thus, more variation over the years. The only variable we use for our models from this dataset is `total expenditure`. However, the model can be used for the other categories. The model is made to be easily reproducible and can be found in the github link provided on page 1. 
+
+### Inflation Data
+
+`cpi.csv`
+
+The dataset provides CPI for every year. It is not seasonally adjusted for changes as it is an annual average. Thus, it is actual price paid by consumers and not adjusted for seasonal fluctuations. The base year for the CPI calculation is 2002 where CPI is 100. Thus, if our CPI is 120 for a year, it indicates a 20% increase since 2002. This value is useful as an indicator for inflation, as it provides the increase and comparison between years, rather than a absolute price values. 
+
+From this dataset, we chose to look at the annual average to keep it consistent with the annual average of expenditures. The data provides cpi for specific categories, as well as all-items. We chose to select cpi for all-items, food, shelter, and recreations, for comparison with the household spending. The prices for food and shelter increased almost 35% in the 10 years illustrated in @fig-cpi. However, the prices for recreation saw a decrease in 2020 and 2021, which indicates a relation to COVID-19. Our models will use the ‘all-items’ CPI to ensure consistency. 
 
 ```{r}
 #| label: fig-cpi
@@ -155,7 +148,13 @@ ggplot(cpi, aes(x = Year, y = VALUE, color = product_groups, group = product_gro
 
 ```
 
-From the CPI dataset, we chose to look at the annual average to keep it consistent with the annual average of expenditures. The data provides cpi for specific categories, as well as all-items. We chose to select cpi for all-items, food, shelter, and recreations, for comparison with the household spending. The prices for food and shelter increased almost 35% in the 10 years illustrated in @fig-cpi. However, the prices for recreation saw a decrease in 2020 and 2021, which indicates a relation to COVID-19. Our models will use the ‘all-items’ CPI to ensure consistency. 
+### Income Data
+
+`income.csv`
+
+Throughout the province of Ontario, there exits people in many different financial situations. Statistics Canada provides us with this dataset that contains the average number of people in an income category. For example, “persons with income under $5000", “persons with income of $5000 and over”, “persons with income of $10 000 and over.” Note for 2020, COVID-19 government income support and benefits are included in income estimates. 
+
+From this dataset, we chose to isolate the values for the category “all persons with income”. This indicate all tax fillers and dependants that earn income from all sources. This was done to keep our analysis consistent, as we could not separate who was spending. Our model will use the all persons with income variable as well. @fig-income shows a significant increase in the number of income earners. This could be due to a population increase, specifically an increase in tax fillers and tax dependants.
 
 ```{r}
 #| label: fig-income
@@ -182,7 +181,7 @@ ggplot(income, aes(x = Year, y = VALUE)) +
 
 ```
 
-From the income dataset, we chose to isolate the values for the category “all persons with income”. This indicate all tax fillers and dependants that earn income from all sources. This was done to keep our analysis consistent, as we could not separate who was spending. Our model will use the all persons with income variable as well. @fig-income shows a significant increase in the number of income earners. This could be due to a population increase, specifically an increase in tax fillers and tax dependants. 
+For our analysis, we have to use all three dataset values and thus, we chose to use data for the years 2010 to 2021, excluding 2018 and 2020, given the data was only available in all given datasets for these years. However our model does predict the behaviour in 2018 and 2020, using the other years’ data. We also created numerous csv files that isolated the specific data. @sec-appendix thoroughly explains the structure of the csv files.
 
 ## Measurement
 
