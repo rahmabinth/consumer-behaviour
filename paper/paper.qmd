@@ -58,7 +58,7 @@ This paper was designed to communicate our model and analysis in a structured ma
 # Data {#sec-data}
 
 ## Methodology
-The language and environment used for this analysis is R (R Core Team 2020), alongside the tidyverse (cite), rstanarm (cite), cansim (cite), knitr (cite), ggplot2 (cite), scales (cite), modelsummary (cite), and marginaleffects (cite) packages. 
+The language and environment used for this analysis is R [@citeR], alongside the tidyverse (@tidyverse), rstanarm (@rstanarm), cansim [@cansim], ggplot2 [@ggplot2], scales [@scales], modelsummary [@modelsummary], and marginaleffects [@marginaleffects] packages. 
 
 We downloaded the data directly from Statistics Canada using the cansim package. We cleaned it, identified missing values and wrote csv files to make it easily accessible using R studio. 
 
@@ -309,11 +309,11 @@ y_i|\mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
 
 Where:
 
-* $y_i$ as the total expenditure in Canadian dollars in year i. 
-* $cpi_i$ is the annual Consumer Price Index (CPI) for year i
+* $y_i$ is the continuous outcome variable, representing the total expenditure in Canadian dollars in year i. 
+* $cpi_i$ is the predictor variable, representing the annual Consumer Price Index (CPI) for year i
 
 ### Multiple linear regression
-The model we employ is:
+The model we employed is:
 
 \begin{align} 
 y_i|\mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
@@ -326,9 +326,10 @@ y_i|\mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
 
 Where:
 
-* $y_i$ as the total expenditure in Canadian dollars in year i. 
-* $cpi_i$ is the annual Consumer Price Index (CPI) for year i
-* $income_i$ is the number of people in Ontario earning an income
+
+* $y_i$ is the continuous outcome variable, representing the total expenditure in Canadian dollars in year $i$. 
+* $cpi_i$ is the predictor variable, representing the annual Consumer Price Index (CPI) for year $i$
+* $income_i$ is the number of people earning an income in year $i$.
 
 ### Model justification
 
