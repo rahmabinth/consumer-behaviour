@@ -20,6 +20,7 @@ bibliography: references.bib
 library(tidyverse)
 library(palmerpenguins)
 library(patchwork)
+library(rstanarm)
 
 spending <-  read_csv(here::here("data/analysis_data/spending.csv"))
 
@@ -73,7 +74,7 @@ This paper’s objective is to address the following questions using data collec
 
 This dataset contains the average total expenditures of the Ontario resident for the years 2010 to 2021, excluding years 2018 and 2020. It also contains the breakdown of the expenditures, food purchased (from restaurant and stores), shelter (rented and owned), utilities such as water, fuel, and electricity for the principal accommodation, clothing, transportation (private and public), healthcare, recreational goods and services.
 
-From this dataset, we chose to select the values for all food expenditures, all shelter expenditures, recreation expenditures, and total expenditures. This choice was made because these are principal expenditures for everyone. Recreation was added to this mix, to identify how consumers behave when inflation is high. @fig-food_n_recreation indicates this relationship. In @fig-spending, we observe a steady increase in recreation expenditures, while food, shelter, and overall expenditures show a more rapid growth. Note for simplicity, we did not include the other categories used for total expenditures. For all four of the categories, the mean and median values were close to each other, indicating the data is not skewed and did not have many outliers. However, the standard deviation for shelter and total expenditures were higher which indicates more money was spent and thus, more variation over the years. The only variable we use for our models from this dataset is `total expenditure`. However, the model can be used for the other categories. The model is made to be easily reproducible and can be found in the github link provided on page 1. 
+From this dataset, we chose to select the values for all food expenditures, all shelter expenditures, recreation expenditures, and total expenditures. This choice was made because these are principal expenditures for everyone. Recreation was added to this mix, to identify how consumers behave when inflation is high. @fig-food_n_recreation indicates this relationship. In @fig-spending, we observe a steady increase in recreation expenditures, while food, shelter, and overall expenditures show a more rapid growth. Note for simplicity, we did not include the other categories used to calculate total expenditures in the original dataset. This is the reason the total expenditure is significantly higher than the other categories. For all four of the categories, the mean and median values were close to each other, indicating the data is not skewed and did not have many outliers. However, the standard deviation for shelter and total expenditures were higher which indicates more money was spent and thus, more variation over the years. The only variable we use for our models from this dataset is `total expenditure`. However, the model can be used for the other categories. The model is made to be easily reproducible and can be found in the github link provided on page 1. 
 
 ```{r}
 #| label: fig-spending
@@ -186,6 +187,17 @@ For our analysis, we have to use all three dataset values and thus, we chose to 
 ## Measurement
 
 A discussion about measurement.
+A discussion about measurement.
+A discussion about measurement.
+A discussion about measurement.
+A discussion about measurement.
+A discussion about measurement.
+A discussion about measurement.
+A discussion about measurement.
+A discussion about measurement.
+A discussion about measurement.
+A discussion about measurement.
+
 
 ```{r}
 #| label: fig-total_n_shelter
@@ -290,11 +302,11 @@ print(food_recreation_cpi)
 
 # Model {#sec-model}
 
-The goal of our model is to forecasting the total expenditure in a household in a year, based solely on a the Consumer Price Index, and the number of people in Ontario earning an income. We run the model in R [@citeR] using the `rstanarm` package of @rstanarm. We use the default priors from `rstanarm`.
-
-Here we briefly describe the Bayesian analysis model used to investigate... Background details and diagnostics are included in [Appendix -@sec-model-details].
+In this section we build a model to investigate household consumer behaviour.
 
 ## Model set-up
+
+The goal of our model is to forecast the total expenditure in a household in a year, based solely on the Consumer Price Index of all-items, and the number of people in Ontario earning an income. We run the model in R [@citeR] using the `rstanarm` package of @rstanarm. We use the default priors from `rstanarm`. Background details and diagnostics are included in [Appendix -@sec-model-details].
 
 ### Simple linear regression
 The model we employ is:
@@ -331,16 +343,14 @@ Where:
 * $cpi_i$ is the predictor variable, representing the annual Consumer Price Index (CPI) for year $i$
 * $income_i$ is the number of people earning an income in year $i$.
 
-### Model justification
+## Model justification
 
-We expect a positive relationship between the size of the wings and time spent aloft. In particular...
-
-We can use maths by including latex between dollar signs, for instance $\theta$.
+From @fig-total_n_shelter and fig-food_n_recreation, we see a positive relationship in expenditure and CPI as the years pass. Implying that despite rising prices, household spending has continued to increase, specifically in the food and shelter categories. Due to this relationship, we anticipate the relationship is close to linear. We assume this relationship because food and shelter are necessities unlike recreational spending. 
 
 
 ```{r}
 #| label: fig-2
-#| fig-cap: Linear model
+#| fig-cap: Relationship between CPI for all-items and total household expenditure
 #| echo: false
 #| warning: false
 #| message: false
@@ -357,7 +367,6 @@ total_ex_cpi |>
     formula = y ~ x
   ) +
   labs(
-    title = "Total Expenditure vs All-Items CPI",
     x = "All-Items CPI",
     y = "Total Expenditure",
     color = "Year"
@@ -370,50 +379,17 @@ total_ex_cpi |>
 
 ```{r}
 #| label: fig-3
-#| fig-cap: Linear model
+#| fig-cap: Relationship between CPI for all-items and total household expenditure
 #| echo: false
 #| warning: false
 #| message: false
 library(scales)
 
-total_ex_cpi |>
-  ggplot(aes(x = cpi, y = expenditure, color = factor(Year))) +
-  geom_point(size = 1) +
-  geom_smooth(
-    method = "lm",
-    se = TRUE,
-    color = "black",
-    linetype = "dashed",
-    formula = y ~ x
-  ) +
-  labs(
-    title = "Total Expenditure vs All-Items CPI",
-    x = "All-Items CPI",
-    y = "Total Expenditure",
-    color = "Year"
-  ) +
-  scale_y_continuous(labels = scales::comma) +
-  scale_color_viridis_d() +
-  theme_minimal()
 ```
 
 # Results {#sec-results}
 
-Our results are summarized in @tbl-modelresults.
-
-```{r}
-#| echo: false
-#| eval: true
-#| warning: false
-#| message: false
-
-library(rstanarm)
-
-first_model <-
-  readRDS(file = here::here("models/first_model.rds"))
-second_model <-
-  readRDS(file = here::here("models/second_model.rds"))
-```
+Our model results are summarized in @tbl-modelresults. The table compares our two models, each predicting the outcome variable (total expenditure), based on either CPI only, and CPI and the number of income earners. 
 
 ```{r}
 #| echo: false
@@ -422,10 +398,15 @@ second_model <-
 #| tbl-cap: "Explanatory models of "
 #| warning: false
 
+first_model <-
+  readRDS(file = here::here("models/first_model.rds"))
+second_model <-
+  readRDS(file = here::here("models/second_model.rds"))
+
 modelsummary::modelsummary(
   list(
-    "First model" = first_model,
-    "Second model" = second_model
+    "CPI" = first_model,
+    "Add Income Earners" = second_model
   ),
   statistic = "mad",
   fmt = 2

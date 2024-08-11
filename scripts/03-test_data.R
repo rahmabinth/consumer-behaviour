@@ -1,8 +1,8 @@
 #### Preamble ####
 # Purpose: Tests... [...UPDATE THIS...]
-# Author: Rohan Alexander [...UPDATE THIS...]
+# Author: Rahma Binth Mohammad
 # Date: 11 February 2023 [...UPDATE THIS...]
-# Contact: rohan.alexander@utoronto.ca [...UPDATE THIS...]
+# Contact: rahma.binthmohammad@mail.utoronto.ca
 # License: MIT
 # Pre-requisites: Run the "00-install_packages.R", "01-download_data", and "02-data_cleaning"
 # Any other information needed? [...UPDATE THIS...]
