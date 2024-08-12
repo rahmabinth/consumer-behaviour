@@ -3,9 +3,9 @@ title: "Does inflation make you spend less?"
 author: 
   - Rahma Binth Mohammad
 thanks: "Code and data are available at: https://github.com/rahmabinth/consumer-behaviour"
-date: today
+date: 5 August 2024
 date-format: long
-abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
+abstract: "This paper investigates the consumer behaviour of an average Ontario household. Drawing upon data from Statistics Canada, this paper finds people do not spend less in total, nor in food or shelter. Our discovery can help policymakers use this information to employ strategies for the wellbeing of the state and to ensure households and states don’t go deeper into debt."
 format: pdf
 number-sections: true
 toc: true
@@ -34,7 +34,7 @@ recreation_ex_cpi <- read_csv(here::here("data/analysis_data/recreation_ex_cpi.c
 spending_n_income <- read_csv(here::here("data/analysis_data/spending_n_income.csv"))
 ```
 # Introduction
-Consumption is the biggest indicator of a person’s needs and desires. It tells us the exact amount and item people are willing to spend on. Our interest is to inquire into whether tracking consumption, along with income and prices of items through inflation, will tell us a better story about a household’s financial behaviour and broader economic trends. By assessing these variables, we can uncover how inflation influences spending habits and whether an increase or decrease in the number of income earners in a region can mitigate or exacerbate the effects of rising or falling prices. The relationship between these variables can provide information in regards to improving economic stability and effective social governmental assistance to support households in managing their spending in the face of inflationary pressures. Overall, policymakers can use this information to employ strategies for the wellbeing of the state and ensure households and even states don’t go deeper into debt. 
+Consumption is the biggest indicator of a person’s needs and desires. It tells us the exact amount and item people are willing to spend on. Our interest is to inquire into whether tracking consumption, along with income and prices of items through inflation, will tell us a better story about a household’s financial behaviour and broader economic trends. By assessing these variables, we can uncover how inflation influences spending habits and whether an increase or decrease in the number of income earners in a region can mitigate or exacerbate the effects of rising or falling prices. The relationship between these variables can provide information in regards to improving economic stability and effective social governmental assistance to support households in managing their spending in the face of inflationary pressures.
 
 Recently, inflation has become serious issue. It diminishes purchasing power, which is a problem at the individual level but also state level. On an individual level, it affects costs of living, impeding the ability to live luxuriously. On a state level, it can lead to increased costs for goods and services, reducing the competitiveness of a state’s exports and making it harder for businesses to thrive on a domestic and global market. Thus, it is crucial states manage inflation as it will strength consumer and investor confidence, leading to economic stability and growth.
 
