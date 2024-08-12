@@ -1,4 +1,4 @@
-# Does inflation really make people spend less?
+# Does inflation make you spend less?
 
 ## Overview
 
