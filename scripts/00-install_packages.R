@@ -1,7 +1,7 @@
 #### Preamble ####
 # Purpose: Installs the necessary packages. 
 # Author: Rahma Binth Mohammad
-# Date: 
+# Date: July 20, 2024
 # Contact: rahma.binthmohammad@mail.utoronto.ca
 # License: MIT
 
@@ -9,4 +9,4 @@
 install.packages("tidyverse")
 install.packages("cansim")
 install.packages("dplyr")
-
+install.packages("rstanarm")

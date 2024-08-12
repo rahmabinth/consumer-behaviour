@@ -1,18 +1,18 @@
 #### Preamble ####
 # Purpose: Cleans the raw plane data recorded by Statistics Canada and filters the necessary columns
 # Author: Rahma Binth Mohammad
-# Date: 6 April 2023 [...UPDATE THIS...]
+# Date: Jul 20, 2024
 # Contact: rahma.binthmohammad@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: Run "00-install_packages.R" and "01-download_data". 
-# Any other information needed? [...UPDATE THIS...]
+# Pre-requisites: Run "00-install_packages.R" and "02-download_data.R."
 
 #### Workspace setup ####
+
 library(tidyverse)
 
 #### Clean data ####
+#Read, filter and rename the household spending data
 
-#Filter and rename the household spending data
 spending <- read.csv("data/raw_data/spending.csv")
 
 spending <- spending %>% 
@@ -29,7 +29,7 @@ spending <- spending %>%
     "Food expenditures" = "Food"
   ))
 
-#Filter and rename the annual CPI data
+#Read, filter and rename the annual CPI data
 cpi <- read.csv("data/raw_data/cpi.csv")
 
 cpi <- cpi %>% 
@@ -46,9 +46,7 @@ cpi <- cpi %>%
     "Recreation, education and reading" = "Recreation"
   ))
 
-#Filter and rename the household income data
-income <- read.csv("data/raw_data/income.csv")
-
+#Read, filter and rename the household income data
 income <- income %>% 
   rename(income_categories = Persons.with.income, Year = REF_DATE, age = Age.group)
 

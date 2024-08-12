@@ -1,18 +1,17 @@
 #### Preamble ####
 # Purpose: Creates graphs with filtered data that is included in the paper, useful for reproduction
 # Author: Rahma Binth Mohammad
-# Date: 11 February 2023 [...UPDATE THIS...]
+# Date: July 24, 2024
 # Contact: rahma.binthmohammad@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: [...UPDATE THIS...]
-# Any other information needed? [...UPDATE THIS...]
+# Pre-requisites: Run the "00-install_packages.R", "02-download_data.R", and "03-data_cleaning.R" files. 
 
 #### Workspace setup ####
 library(tidyverse)
 library(dplyr)
 library(scales)
 
-#### Load data ####
+#### Read data ####
 spending <- read.csv("data/analysis_data/spending.csv")
 
 # Calculate summary statistics
@@ -77,6 +76,7 @@ spending_n_year <- ggplot(spending, aes(x = Year, y = VALUE, color = expenditure
     )
 
 print(spending_n_year)
+
 #Plot CPI values for each category for each year
 #Set colours so that it is easily comparible with spending data
 cpi_colours <- c(
@@ -126,7 +126,7 @@ ggplot(income, aes(x = Year, y = VALUE)) +
     limits = c(9600000, 11250000)
   )
 
-#Plot spending against cpi
+#Plot all spending categories against all cpi categories
 ggplot(total_ex_cpi, aes(x = cpi, y = expenditure, color = factor(Year))) +
   geom_point(size = 1) +
   geom_line(linewidth = 0.5, aes(group = 1)) +
@@ -192,10 +192,10 @@ ggplot(recreation_ex_cpi, aes(x = VALUE.x, y = VALUE.y, color = factor(Year))) +
     labels = scales::comma
   )
 
-# Plot with points and lines
+# Plot with spending against income
 ggplot(spending_n_income, aes(x = VALUE.x, y = VALUE.y, color = factor(Year))) +
   geom_point(size = 1) +
-  geom_line(linewidth = 0.5, aes(group = 1)) + # Connect the points with a line
+  geom_line(linewidth = 0.5, aes(group = 1)) + 
   labs(
     x = "Number of Income Earners",
     y = "Total Expenditure",

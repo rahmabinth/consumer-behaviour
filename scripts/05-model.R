@@ -1,11 +1,10 @@
 #### Preamble ####
-# Purpose: Models... [...UPDATE THIS...]
+# Purpose: Models the data two different ways.
 # Author: Rahma Binth Mohammad
-# Date: 11 February 2023 [...UPDATE THIS...]
+# Date: July 24, 2024
 # Contact: rahma.binthmohammad@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: Run the "00-install_packages.R", "01-download_data.R", "02-data_cleaning.R", "03-test_data.R"
-# Any other information needed? [...UPDATE THIS...]
+# Pre-requisites: Run the "00-install_packages.R", "02-download_data.R", and "03-data_cleaning.R" files. 
 
 #### Workspace setup ####
 library(tidyverse)
@@ -48,4 +47,3 @@ saveRDS(
   second_model,
   file = "models/second_model.rds"
 )
-
