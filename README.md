@@ -1,24 +1,24 @@
-# Starter folder
+# Does inflation really make people spend less?
 
 ## Overview
 
-This repo provides students with a foundation for their own projects associated with *Telling Stories with Data*. You do not need every aspect for every paper and you should delete aspects that you do not need.
+This repository gathers data from Statistics Canada in relation to the average household spending, annual consumer price index, and the number of tax fillers with income. 
 
-To use this folder, click the green "Code" button", then "Download ZIP". Move the downloaded folder to where you want to work on your own computer, and then modify it to suit.
-
+To download the data from the Statistics Canada website, use the `cansim` package and run the "01-download.data.R" file.
 
 ## File Structure
 
-The repo is structured as:
+The repository is structured as:
 
--   `data/raw_data` contains the raw data as obtained from X.
--   `data/analysis_data` contains the cleaned dataset that was constructed.
--   `model` contains fitted models. 
--   `other` contains relevant literature, details about LLM chat interactions, and sketches.
+-   `data/raw_data` contains the raw data as obtained from Statistics Canada.
+-   `data/analysis_data` contains the cleaned datasets that was constructed. Explanations are provided in the "02-data_cleaning.R" file.
+-   `model` contains fitted models.
+-   `other` contains details about LLM chat interactions, and sketches.
 -   `paper` contains the files used to generate the paper, including the Quarto document and reference bibliography file, as well as the PDF of the paper. 
--   `scripts` contains the R scripts used to simulate, download and clean data.
+-   `scripts` contains the R scripts used to simulate, download, clean, test, model and graph the data.
 
 
 ## Statement on LLM usage
 
-Aspects of the code were written with the help of the auto-complete tool, Codriver. The abstract and introduction were written with the help of ChatHorse and the entire chat history is available in inputs/llms/usage.txt.
+ChatGPT 4 was used to make the abstract short and concise. The entire chat history is available in other/llms/usage.txt.
+
